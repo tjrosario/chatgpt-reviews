@@ -48,7 +48,7 @@ export const ReviewCard: React.FC<{ review: Review }> = ({ review }) => {
         </div>
       </div>
 
-      <h3 className="font-semibold text-gray-900 mb-2 leading-tight">
+      <h3 className="font-semibold text-lg text-gray-900 mb-2 leading-tight">
         {review.title}
       </h3>
       <p className="text-gray-700 mb-4 leading-relaxed">{review.body}</p>

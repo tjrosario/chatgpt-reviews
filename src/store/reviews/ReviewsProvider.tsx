@@ -10,16 +10,16 @@ import {
 import { FilterState } from "../../types/filters";
 import {
   AppfiguresResponse,
-  AppfiguresReview,
-  Review,
   ReviewContextType,
   ReviewsResponse,
 } from "../../types/review";
 import { api } from "../../utils/apiClient";
 import { buildQueryParams } from "../../utils/query";
+import { transformReview } from "../../utils/review";
+import { API_BASE_URL } from "../../config/api";
 
 export const ReviewsContext = createContext<ReviewContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const useReviews = (): ReviewContextType => {
@@ -29,27 +29,6 @@ export const useReviews = (): ReviewContextType => {
   }
   return context;
 };
-
-// Appfigures API configuration
-const API_BASE_URL = "https://appfigures.com/_u/careers/api/reviews";
-
-// Transform API/mock response to our internal format
-const transformReview = (apiReview: AppfiguresReview): Review => ({
-  id: apiReview.id,
-  rating: Math.round(parseFloat(apiReview.stars)), // Convert "1.00" to 1
-  title: apiReview.title,
-  body: apiReview.review,
-  author: apiReview.author,
-  date: apiReview.date.split("T")[0], // Extract date part from ISO string
-  version: apiReview.version,
-  country: apiReview.iso,
-  store: apiReview.store,
-  productName: apiReview.product_name,
-  hasResponse: apiReview.has_response,
-  isDeleted: apiReview.deleted,
-  originalTitle: apiReview.original_title,
-  originalReview: apiReview.original_review,
-});
 
 async function fetchReviews(filters: FilterState): Promise<ReviewsResponse> {
   try {
@@ -92,7 +71,7 @@ export const ReviewsProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(
     reviewsReducer,
     initialState,
-    initializer
+    initializer,
   );
 
   const actions = {
